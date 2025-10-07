@@ -27,10 +27,7 @@ spec:
     spec:
       containers:
       - name: {{ .Values.app.appName }}
-        image: {{ .Values.app.imagename }}
-        volumeMounts:
-        - name: config-volume
-          mountPath: /etc/config
+        image: kavindukalinga/hogwartzapp:v2
         imagePullPolicy: {{ .Values.app.image.pullPolicy }}
         resources:
           limits:
@@ -57,9 +54,5 @@ spec:
             configMapKeyRef:
               name: {{ .Values.configmap.name }}
               key: name1
-        volumes:
-        - name: config-volume
-          configMap:
-            name: {{ .Values.configmap.name }}
         ports:
         - containerPort: 5000
