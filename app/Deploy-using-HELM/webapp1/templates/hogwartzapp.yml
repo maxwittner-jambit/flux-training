@@ -1,15 +1,15 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ .Values.app.appName }}
+  name: {{ .Values.app.appName }}    #hogwartzapp
 spec:
-  type: {{ .Values.app.service.type }}
+  type: {{ .Values.app.service.type }} 
   selector:
     app: {{ .Values.app.appName }}
   ports:
-    - port: {{ .Values.app.service.port }}
-      targetPort: {{ .Values.app.service.targetPort }}
-      nodePort: {{ .Values.app.service.nodePort }}
+  - port: {{ .Values.app.service.port }} # 5000
+    targetPort: {{ .Values.app.service.targetPort }} # 5000
+    nodePort: {{ .Values.app.service.nodePort }} 
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -26,21 +26,33 @@ spec:
         app: {{ .Values.app.appName }}
     spec:
       containers:
-        - name: {{ .Values.app.appName }}
-          image: "{{ .Values.app.image.name }}:{{ .Values.app.image.tag }}"
-          imagePullPolicy: {{ .Values.app.image.pullPolicy }}
-          ports:
-            - containerPort: 5000
-          env:
-            - name: POSTGRES_USER
-              value: {{ .Values.externalDb.user }}
-            - name: POSTGRES_PASSWORD
-              value: {{ .Values.externalDb.password }}
-            - name: POSTGRES_HOST
-              value: {{ .Values.externalDb.host }}
-            - name: POSTGRES_DB
-              value: {{ .Values.externalDb.name }}
-          resources:
-            limits:
-              memory: "128Mi"
-              cpu: "250m"
+      - name: {{ .Values.app.appName }}
+        image: "{{ .Values.app.image.name }}:{{ .Values.app.image.tag }}" 
+        imagePullPolicy: {{ .Values.app.image.pullPolicy }}
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "250m"
+        env:
+        - name: POSTGRES_USER
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.secret.name }}
+              key: {{ .Values.secret.username}}
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.secret.name }}
+              key: {{ .Values.secret.password }}
+        - name: POSTGRES_HOST 
+          valueFrom:
+            configMapKeyRef:
+              name: {{ .Values.configmap.name }}
+              key: host
+        - name: POSTGRES_DB # Setting Database Name from a 'ConfigMap'
+          valueFrom:
+            configMapKeyRef:
+              name: {{ .Values.configmap.name }}
+              key: name1
+        ports:
+        - containerPort: 5000
