@@ -1,0 +1,27 @@
+app:
+  image: komalvede/todo-app
+  tag: latest
+  port: 5000
+  replicas: 1
+
+# # DB configuration
+# db:
+#   image: mysql
+#   tag: "8.0"
+#   user: todo-user
+#   password: password
+#   database: mytododb
+
+# # Storage
+# storage:
+#   size: 1Gi
+#   className: manual
+
+# Services
+service:
+  appType: NodePort
+  appNodePort: 30082
+  # dbType: ClusterIP
+ 
+httpRoute:
+  enabled: false

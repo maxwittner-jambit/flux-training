@@ -1,3 +1,0 @@
-{{ .Values.app.appName }} app Running on K8s
-To get the app URL: Run
-    echo http://$(minikube ip):31876

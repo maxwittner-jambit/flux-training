@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-app
+spec:
+  replicas: {{ .Values.app.replicas | default 1 }}
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-app
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-app
+    spec:
+      containers:
+        - name: todo-app
+          image: "{{ .Values.app.image }}:{{ .Values.app.tag }}"
+          ports:
+            - containerPort: {{ .Values.app.port | default 5000 }}
+          env:
+            - name: DB_HOST
+              value: {{ .Values.awsRds.host | quote }}
+            - name: DB_USER
+              value: {{ .Values.awsRds.user | quote }}
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Release.Name }}-rds-secret
+                  key: password
+            - name: DB_NAME
+              value: {{ .Values.awsRds.database | quote }}
+            - name: DB_PORT
+              value: {{ .Values.awsRds.port | quote }}
+            # Add PostgreSQL-specific env vars if needed
+            - name: DB_TYPE
+              value: "postgresql"
