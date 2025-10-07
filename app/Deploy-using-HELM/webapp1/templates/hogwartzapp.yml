@@ -27,7 +27,7 @@ spec:
     spec:
       containers:
       - name: {{ .Values.app.appName }}
-        image: "{{ .Values.app.image.name }}:{{ .Values.app.image.tag }}" 
+        image: {{ .Values.app.imagename }}
         imagePullPolicy: {{ .Values.app.image.pullPolicy }}
         resources:
           limits:

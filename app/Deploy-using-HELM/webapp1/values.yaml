@@ -6,6 +6,7 @@ app:
     name: kavindukalinga/hogwartzapp
     tag: v2
     pullPolicy: "IfNotPresent"
+    imagename: kavindukalinga/hogwartzapp:v2
   
   service:
     type: LoadBalancer
