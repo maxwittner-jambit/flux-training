@@ -1,0 +1,57 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: k8s-kkwebapp
+spec:
+  type: LoadBalancer
+  selector:
+    app: k8s-kkwebapp
+  ports:
+  - port: 8000  
+    targetPort: 8000
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: k8s-kkwebapp
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: k8s-kkwebapp
+  template:
+    metadata:
+      labels:
+        app: k8s-kkwebapp
+    spec:
+      containers:
+      - name: k8s-kkwebapp
+        image: kavindukalinga/k8s-kkwebapp:v2 # docker pull kavindukalinga/k8s-kkwebapp:v2
+        imagePullPolicy: "IfNotPresent"
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "250m"
+        env:
+        - name: POSTGRES_USER
+          valueFrom:
+            secretKeyRef:
+              name: postgres-credentials
+              key: postgres_user
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: postgres-credentials
+              key: postgres_password
+        - name: POSTGRES_HOST 
+          valueFrom:
+            configMapKeyRef:
+              name: postgres-conf
+              key: host2
+        - name: POSTGRES_DB 
+          valueFrom:
+            configMapKeyRef:
+              name: postgres-conf
+              key: name2
+        ports:
+        - containerPort: 8000

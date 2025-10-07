@@ -1,0 +1,115 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: hogwartzapp
+spec:
+  type: LoadBalancer
+  selector:
+    app: hogwartzapp
+  ports:
+  - port: 5000  # port needs to be exposed to the outside
+    targetPort: 5000
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hogwartzapp
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: hogwartzapp
+  template:
+    metadata:
+      labels:
+        app: hogwartzapp
+    spec:
+      containers:
+      - name: hogwartzapp
+        image: kavindukalinga/hogwartzapp:v2 # docker pull kavindukalinga/hogwartzapp:v1
+        imagePullPolicy: "IfNotPresent"
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "250m"
+        env:
+        - name: POSTGRES_USER
+          valueFrom:
+            secretKeyRef:
+              name: postgres-credentials
+              key: postgres_user
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: postgres-credentials
+              key: postgres_password
+        - name: POSTGRES_HOST 
+          valueFrom:
+            configMapKeyRef:
+              name: postgres-conf
+              key: host
+        - name: POSTGRES_DB # Setting Database Name from a 'ConfigMap'
+          valueFrom:
+            configMapKeyRef:
+              name: postgres-conf
+              key: name1
+        ports:
+        - containerPort: 5000
+
+# kind: Service
+# apiVersion: v1
+# metadata:
+#   name: springboot-postgres-k8s
+#   labels:
+#     name: springboot-postgres-k8s
+# spec:
+#   ports:
+#     - nodePort: 30163
+#       port: 8080
+#       targetPort: 8080
+#       protocol: TCP
+#   selector:
+#     app: springboot-postgres-k8s
+#   type: NodePort
+
+# ---
+# apiVersion: apps/v1
+# kind: Deployment
+# metadata:
+#   name: springboot-postgres-k8s
+# spec:
+#   selector:
+#     matchLabels:
+#       app: springboot-postgres-k8s
+#   replicas: 3
+#   template:
+#     metadata:
+#       labels:
+#         app: springboot-postgres-k8s
+#     spec:
+#       containers:
+#         - name: springboot-postgres-k8s
+#           image: springboot-postgres-k8s:1.0
+#           ports:
+#             - containerPort: 8080
+#           env:   # Setting Enviornmental Variables
+#             - name: DB_HOST   # Setting Database host address from configMap
+#               valueFrom:
+#                 configMapKeyRef:
+#                   name: postgres-conf  # name of configMap
+#                   key: host
+#             - name: DB_NAME  # Setting Database name from configMap
+#               valueFrom:
+#                 configMapKeyRef:
+#                   name: postgres-conf
+#                   key: name
+#             - name: POSTGRES_USER  # Setting Database username from Secret
+#               valueFrom:
+#                 secretKeyRef:
+#                   name: postgres-credentials # Secret Name
+#                   key: postgres_user
+#             - name: POSTGRES_PASSWORD # Setting Database password from Secret
+#               valueFrom:
+#                 secretKeyRef:
+#                   name: postgres-credentials
+#                   key: postgres_password

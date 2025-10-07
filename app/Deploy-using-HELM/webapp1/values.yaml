@@ -1,0 +1,17 @@
+app:
+  appName: hogwartzapp
+  image:
+    name: kavindukalinga/hogwartzapp
+    tag: v2
+    pullPolicy: IfNotPresent
+  service:
+    type: LoadBalancer
+    port: 5000
+    targetPort: 5000
+    nodePort: 31876
+
+externalDb:
+  host: your.scaleway.db.host
+  user: your_user
+  password: your_password
+  name: your_db_name

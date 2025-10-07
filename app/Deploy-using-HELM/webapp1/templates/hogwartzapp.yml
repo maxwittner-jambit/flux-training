@@ -1,0 +1,46 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: { { .Values.app.appName } }
+spec:
+  type: { { .Values.app.service.type } }
+  selector:
+    app: { { .Values.app.appName } }
+  ports:
+    - port: { { .Values.app.service.port } }
+      targetPort: { { .Values.app.service.targetPort } }
+      nodePort: { { .Values.app.service.nodePort } }
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: { { .Values.app.appName } }
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: { { .Values.app.appName } }
+  template:
+    metadata:
+      labels:
+        app: { { .Values.app.appName } }
+    spec:
+      containers:
+        - name: { { .Values.app.appName } }
+          image: "{{ .Values.app.image.name }}:{{ .Values.app.image.tag }}"
+          imagePullPolicy: { { .Values.app.image.pullPolicy } }
+          ports:
+            - containerPort: 5000
+          env:
+            - name: POSTGRES_USER
+              value: { { .Values.externalDb.user } }
+            - name: POSTGRES_PASSWORD
+              value: { { .Values.externalDb.password } }
+            - name: POSTGRES_HOST
+              value: { { .Values.externalDb.host } }
+            - name: POSTGRES_DB
+              value: { { .Values.externalDb.name } }
+          resources:
+            limits:
+              memory: "128Mi"
+              cpu: "250m"
