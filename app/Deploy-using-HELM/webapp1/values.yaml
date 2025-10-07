@@ -31,7 +31,7 @@ configmap:
   t1: students
   t2: TodoDB
 
-secret:
-  name: postgres-credentials
-  username: postgres_user
-  password: postgres_password
+# secret:
+#   name: postgres-credentials
+#   username: postgres_user
+#   password: postgres_password
