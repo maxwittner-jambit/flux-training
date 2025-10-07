@@ -33,13 +33,13 @@ spec:
             - containerPort: 5000
           env:
             - name: POSTGRES_USER
-              value: "{{ .Values.externalDb.user }}"
+              value: {{ .Values.externalDb.user }}
             - name: POSTGRES_PASSWORD
-              value: "{{ .Values.externalDb.password }}"
+              value: {{ .Values.externalDb.password }}
             - name: POSTGRES_HOST
-              value: "{{ .Values.externalDb.host }}"
+              value: {{ .Values.externalDb.host }}
             - name: POSTGRES_DB
-              value: "{{ .Values.externalDb.name }}"
+              value: {{ .Values.externalDb.name }}
           resources:
             limits:
               memory: "128Mi"
