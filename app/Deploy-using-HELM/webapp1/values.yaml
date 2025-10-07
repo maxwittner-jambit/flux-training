@@ -12,7 +12,7 @@ app:
     type: LoadBalancer
     port: 5000
     targetPort: 5000
-    nodePort: 31876
+    nodePort: 31877
 
 
 # db:
