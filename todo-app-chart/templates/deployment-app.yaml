@@ -23,10 +23,7 @@ spec:
             - name: DB_USER
               value: {{ .Values.awsRds.user | quote }}
             - name: DB_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Release.Name }}-rds-secret
-                  key: password
+              value: {{ .Values.awsRds.password | quote }}  # Direct from values
             - name: DB_NAME
               value: {{ .Values.awsRds.database | quote }}
             - name: DB_PORT
