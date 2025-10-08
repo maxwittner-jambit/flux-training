@@ -21,7 +21,7 @@ app:
 service:
   appType: NodePort
   appNodePort: 30082
-  # dbType: ClusterIP
+  dbType: ClusterIP
  
 httpRoute:
   enabled: false
