@@ -12,6 +12,8 @@ spec:
       labels:
         app: {{ .Release.Name }}-app
     spec:
+      imagePullSecrets:
+        - name: scw-regcred
       containers:
         - name: todo-app
           image: "{{ .Values.app.image }}:{{ .Values.app.tag }}"
