@@ -73,7 +73,7 @@ def register():
             get_db().commit()
             flash("Registration successful! Please log in.")
             return redirect(url_for('login'))
-        except mysql.connector.Error as err:
+        except psycopg2.Error as err:
             get_db().rollback()
             if err.errno == 1062:  # Duplicate entry error
                 flash("Username already exists.")
@@ -101,7 +101,7 @@ def login():
                 session['username'] = user['username']
                 return redirect(url_for('index'))
             flash("Invalid credentials.")
-        except mysql.connector.Error as err:
+        except psycopg2.Error as err:
             flash("Login failed. Please try again.")
             app.logger.error(f"Login error: {err}")
         finally:
@@ -135,7 +135,7 @@ def index():
                              tasks=tasks, 
                              username=session.get('username'), 
                              filter=status_filter or '')
-    except mysql.connector.Error as err:
+    except psycopg2.Error as err:
         flash("Error loading tasks.")
         app.logger.error(f"Task loading error: {err}")
         return render_template('index.html', tasks=[], username=session.get('username'))
@@ -156,7 +156,7 @@ def add_task():
             (name, status, priority, session['user_id'])
         )
         get_db().commit()
-    except mysql.connector.Error as err:
+    except psycopg2.Error as err:
         get_db().rollback()
         flash("Failed to add task.")
         app.logger.error(f"Add task error: {err}")
@@ -176,7 +176,7 @@ def delete_task(task_id):
             (task_id, session['user_id'])
         )
         get_db().commit()
-    except mysql.connector.Error as err:
+    except psycopg2.Error as err:
         get_db().rollback()
         flash("Failed to delete task.")
         app.logger.error(f"Delete task error: {err}")
@@ -197,7 +197,7 @@ def complete_task(task_id):
             (task_id, session['user_id'])
         )
         get_db().commit()
-    except mysql.connector.Error as err:
+    except psycopg2.Error as err:
         get_db().rollback()
         flash("Failed to complete task.")
         app.logger.error(f"Complete task error: {err}")
@@ -228,7 +228,7 @@ def edit_task(task_id):
         )
         task = cursor.fetchone()
         return render_template('edit_task.html', task=task)
-    except mysql.connector.Error as err:
+    except psycopg2.Error as err:
         get_db().rollback()
         flash("Error editing task.")
         app.logger.error(f"Edit task error: {err}")
