@@ -1,11 +1,10 @@
 import datetime
 from flask import Flask, render_template, request, redirect, url_for, session, flash, g
 from werkzeug.security import generate_password_hash, check_password_hash
-import mysql.connector
+import psycopg2
 from dotenv import load_dotenv
 import os
 from functools import wraps
-import psycopg2
 
 # Load environment variables
 load_dotenv()
