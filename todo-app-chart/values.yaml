@@ -1,6 +1,6 @@
 app:
   image: ghcr.io/maxwittner-jambit/todo-app
-  tag: postgresql
+  tag: latest
   port: 5000
   replicas: 1
 
