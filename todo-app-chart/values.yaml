@@ -1,5 +1,5 @@
 app:
-  image: komalvede/todo-app
+  image: rg.fr-par.scw.cloud/e0f8f12f-6d05-4064-9e8e-f20f39ab8c3f-fr-par-shared/todo-app
   tag: latest
   port: 5000
   replicas: 1
