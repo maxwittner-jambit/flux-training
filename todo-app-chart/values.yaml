@@ -1,6 +1,6 @@
 app:
   image: ghcr.io/maxwittner-jambit/todo-app
-  tag: latest
+  tag: v0.1.0
   port: 5000
   replicas: 1
 
