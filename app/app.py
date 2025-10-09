@@ -2,6 +2,7 @@ import datetime
 from flask import Flask, render_template, request, redirect, url_for, session, flash, g
 from werkzeug.security import generate_password_hash, check_password_hash
 import psycopg2
+from psycopg2.extras import DictCursor
 from dotenv import load_dotenv
 import os
 from functools import wraps
@@ -29,7 +30,8 @@ def get_db():
     return g.db
 
 def get_cursor():
-    return get_db().cursor(dictionary=True)
+    from psycopg2.extras import DictCursor
+    return get_db().cursor(cursor_factory=DictCursor)
 
 @app.teardown_appcontext
 def close_db(error):
@@ -287,4 +289,3 @@ def edit_task(task_id):
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', debug=True)
-    
