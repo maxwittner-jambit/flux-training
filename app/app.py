@@ -36,6 +36,54 @@ def close_db(error):
     if hasattr(g, 'db'):
         g.db.close()
 
+def init_database():
+    """Initialize database tables if they don't exist"""
+    conn = psycopg2.connect(
+        host=os.getenv('DB_HOST'),
+        user=os.getenv('DB_USER'),
+        password=os.getenv('DB_PASSWORD'),
+        database=os.getenv('DB_NAME'),
+        port=os.getenv('DB_PORT', 5432)
+    )
+    cursor = conn.cursor()
+    
+    try:
+        # Create users table
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS users (
+                id SERIAL PRIMARY KEY,
+                username VARCHAR(80) UNIQUE NOT NULL,
+                password_hash VARCHAR(255) NOT NULL,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        ''')
+        
+        # Create tasks table
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS tasks (
+                id SERIAL PRIMARY KEY,
+                name VARCHAR(255) NOT NULL,
+                status VARCHAR(50) DEFAULT 'Pending',
+                priority VARCHAR(50) DEFAULT 'Medium',
+                user_id INTEGER REFERENCES users(id),
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                completed_at TIMESTAMP NULL
+            )
+        ''')
+        
+        conn.commit()
+        print("Database tables initialized successfully!")
+        
+    except Exception as e:
+        print(f"Error initializing database: {e}")
+        conn.rollback()
+    finally:
+        cursor.close()
+        conn.close()
+
+# Initialize database on startup
+init_database()
+
 # Helper functions
 def login_required(f):
     @wraps(f)
@@ -75,7 +123,8 @@ def register():
             return redirect(url_for('login'))
         except psycopg2.Error as err:
             get_db().rollback()
-            if err.errno == 1062:  # Duplicate entry error
+            # PostgreSQL error code for unique violation
+            if err.pgcode == '23505':  # Unique violation
                 flash("Username already exists.")
             else:
                 flash("Registration failed. Please try again.")
@@ -238,3 +287,4 @@ def edit_task(task_id):
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', debug=True)
+    
