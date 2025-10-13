@@ -12,8 +12,9 @@ spec:
       labels:
         app: {{ .Release.Name }}-app
     spec:
+      {{- if .Values.app.imagePullSecrets }}
       imagePullSecrets:
-      {{ toYaml .Values.app.imagePullSecrets | indent 6 }}
+        {{- toYaml .Values.app.imagePullSecrets | nindent 6 }}
       {{- end }}
       containers:
         - name: todo-app
