@@ -3,6 +3,8 @@
 #   tag: v0.1.1
 #   port: 5000
 #   replicas: 1
+#   imagePullSecrets:
+#     - name: registry-secret
 
 # # DB configuration
 # db:
