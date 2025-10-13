@@ -1,8 +1,8 @@
-app:
-  image: ghcr.io/maxwittner-jambit/todo-app
-  tag: v0.1.1
-  port: 5000
-  replicas: 1
+# app:
+#   image: ghcr.io/maxwittner-jambit/todo-app
+#   tag: v0.1.1
+#   port: 5000
+#   replicas: 1
 
 # # DB configuration
 # db:
@@ -18,10 +18,10 @@ app:
 #   className: manual
 
 # Services
-service:
-  appType: NodePort
-  appNodePort: 30082
-  dbType: ClusterIP
+# service:
+#   appType: NodePort
+#   appNodePort: 30082
+#   dbType: ClusterIP
  
 httpRoute:
   enabled: false
