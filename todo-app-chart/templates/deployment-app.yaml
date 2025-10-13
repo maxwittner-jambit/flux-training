@@ -13,7 +13,7 @@ spec:
         app: {{ .Release.Name }}-app
     spec:
       imagePullSecrets:
-        - name: {{ .Values.app.imagePullSecret }}
+        - name: {{ .Values.app.imagePullSecrets }}
       containers:
         - name: todo-app
           image: "{{ .Values.app.image }}:{{ .Values.app.tag }}"
