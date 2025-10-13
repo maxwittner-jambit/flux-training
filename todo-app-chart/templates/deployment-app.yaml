@@ -12,10 +12,8 @@ spec:
       labels:
         app: {{ .Release.Name }}-app
     spec:
-      {{- if .Values.app.imagePullSecrets }}
       imagePullSecrets:
-        {{- toYaml .Values.app.imagePullSecrets | nindent 6 }}
-      {{- end }}
+        - name: registry-secret
       containers:
         - name: todo-app
           image: "{{ .Values.app.image }}:{{ .Values.app.tag }}"
