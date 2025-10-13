@@ -13,7 +13,8 @@ spec:
         app: {{ .Release.Name }}-app
     spec:
       imagePullSecrets:
-        - name: ghcr-secret
+      {{ toYaml .Values.app.imagePullSecrets | indent 6 }}
+      {{- end }}
       containers:
         - name: todo-app
           image: "{{ .Values.app.image }}:{{ .Values.app.tag }}"
